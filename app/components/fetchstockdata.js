@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactHighcharts from 'react-highcharts'; // Expects that Highcharts was loaded in the code. react-highstock
-// import ReactHighmaps from 'react-highcharts/ReactHighmaps';
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'; // Expects that Highcharts was loaded in the code.
 
 class FetchStockData extends React.Component {
@@ -15,7 +14,7 @@ class FetchStockData extends React.Component {
   }
 
   componentDidMount(){
-      let url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&outputsize=full&apikey=HOFON6NCZGGNG78W';
+      let url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=MSFT&interval=1min&outputsize=full&apikey=HOFON6NCZGGNG78W';
        // Your dedicated access key is: HOFON6NCZGGNG78W
        let array = [];
       fetch(url, {
@@ -25,16 +24,27 @@ class FetchStockData extends React.Component {
       }).then(res => (res.json()))
       .catch(error => console.error('Error:', error))
       .then(response => {
-          let data = response['Time Series (1min)'];
-          Object.keys(response['Time Series (1min)']).map(i => array.push([new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. volume'])]));
+        // console.log(response["Monthly Adjusted Time Series"]);
+          let data = response["Monthly Adjusted Time Series"];
+          Object.keys(response["Monthly Adjusted Time Series"]).map(i => array.push([new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. adjusted close'])]));
           this.setState({
-            data: array.sort()
+            data: array.sort(sortFunction)
           });
+          // console.log(array);
       });
+
+      function sortFunction(a, b) {
+          if (a[0] === b[0]) {
+              return 0;
+          }
+          else {
+              return (a[0] < b[0]) ? -1 : 1;
+          }
+      }
   }
 
   componentWillReceiveProps(newProps){
-      let url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='+newProps.stock+'&interval=1min&outputsize=full&apikey=HOFON6NCZGGNG78W';
+      let url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol='+newProps.stock+'&interval=1min&outputsize=full&apikey=HOFON6NCZGGNG78W';
        // Your dedicated access key is: HOFON6NCZGGNG78W
        let array = [];
       fetch(url, {
@@ -44,13 +54,22 @@ class FetchStockData extends React.Component {
       }).then(res => (res.json()))
       .catch(error => console.error('Error:', error))
       .then(response => {
-          let data = response['Time Series (1min)'];
-          Object.keys(response['Time Series (1min)']).map(i => array.push([new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. volume'])]));
+          let data = response["Monthly Adjusted Time Series"];
+          Object.keys(response["Monthly Adjusted Time Series"]).map(i => array.push([new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. adjusted close'])]));
           this.setState({
-            data: array.sort(),
+            data: array.sort(sortFunction),
             stock: newProps.stock
           });
       });
+
+      function sortFunction(a, b) {
+          if (a[0] === b[0]) {
+              return 0;
+          }
+          else {
+              return (a[0] < b[0]) ? -1 : 1;
+          }
+      }
   }
 
   render(){
@@ -60,14 +79,23 @@ class FetchStockData extends React.Component {
         dataLength = this.state.data != undefined ? this.state.data.length : '',
         // set the allowed units for data grouping
         groupingUnits = [[
-            'week',                         // unit name
-            [1]                             // allowed multiples
-        ], [
-            'month',
-            [1, 2, 3, 4, 6]
-        ]],
-
-        i = 0;
+                            'minute',
+                            [1, 2, 5, 10, 15, 30]
+                        ], [
+                            'hour',
+                            [1, 2, 3, 4, 6, 8, 12]
+                        ], [
+                            'day',
+                            [1]
+                        ], [
+                            'week',
+                            [1]
+                        ], [
+                            'month',
+                            [1, 3, 6]
+                        ]];
+                        
+       var i = 0;
 
     for (i; i < dataLength; i += 1) {
         ohlc.push([
@@ -91,7 +119,7 @@ class FetchStockData extends React.Component {
         },
 
         title: {
-            text: this.state.stock + ' Historical'
+            text: this.props.stock + ' Historical ('+this.props.companyName+')'
         },
 
         yAxis: [{

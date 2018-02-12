@@ -1,31 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FetchStockData from './components/FetchStockData.js';
+import Dropdown from './components/Dropdown.js';
+import StockList from './StockData.js'; //stockList
+
 
 class StockExchange extends React.Component {
   constructor(props){
     super(props);
 
-  let stockList = [['MSFT', 'Microsoft'],
-                    ['FB', 'FB'],
-                    ['AAPL', 'Apple'],
-                    ['20MICRONS', '20 Microns'],
-                    ['21STCENMGM', '21st Cent. Mgmt.'],
-                    ['3MINDIA', '3M India'],
-                    ['ORCL', 'Oracle'],
-                    ['CSCO', 'Cisco Systems, Inc.'],
-                    ['TURN', '180 Degree Capital Corp.'],
-                    ['VNET', '21Vianet Group, Inc.'],
-                    ['FLWS', '1-800 FLOWERS.COM, Inc.'],
-                    ['ZNGA', 'Zynga Inc.'],
-                    ['WIX', 'Wix.com Ltd..com'],
-                    ['WEB', 'Web.com Group, Inc.']
-                  ];
-
     this.state = {
       type: 'default',
       stock: 'MSFT',
-      stockList: stockList
+      companyName: 'Microsoft',
+      stockList: StockList
     }
 
     this.changeType = this.changeType.bind(this);
@@ -44,14 +32,15 @@ class StockExchange extends React.Component {
     }
 
     this.setState({
-      stock: e.target.value
+      stock: e.target.value,
+      companyName: b[0][1]
     });    
 
   }
 
   render(){
     return (<div>
-	        <FetchStockData type={this.state.type} stock={this.state.stock} />
+	        <FetchStockData type={this.state.type} stock={this.state.stock} companyName={this.state.companyName} />
 
           <b>Select Chart Type  </b>
           <select name="type" onChange={e => this.changeType(e)}>
@@ -61,13 +50,7 @@ class StockExchange extends React.Component {
             <option value="scatter">Scatter</option>
           </select>
 
-          <div style={{'float': 'right'}}>
-            <b>Select company name  </b>
-            <input list="stocks" name="stock" onChange={e => this.changeStock(e)} />
-            <datalist id="stocks">
-              {this.state.stockList.map(i => <option key={i} value={i[0]} >{i[1]}</option>)}
-            </datalist>
-          </div>
+          <Dropdown onChange={e => this.changeStock(e)} stockList={this.state.stockList}/>
 	      </div>);
   }
 }
