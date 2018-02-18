@@ -32,7 +32,7 @@ class Dropdown extends React.Component {
 	render(){
 		return (
 				<div className="col-md-6 offset-6">
-		            <b>Select company name  </b>
+		            <b>Search company name/symbol </b>
 		            <input list="stocks" name="stock" onChange={(e) => this.onChangeListSimilar(e)} />
 		            {!this.state.liSelected &&
 		            <ul id="list" onClick={(e) => (this.props.onClick(e), this.onClick(e))} >
