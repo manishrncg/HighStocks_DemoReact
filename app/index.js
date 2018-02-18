@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import FetchStockData from './components/FetchStockData.js';
 import Dropdown from './components/Dropdown.js';
-import StockList from './StockData.js'; //stockList
+import StockList from './StocksData.js'; //stockList
 
 
 class StockExchange extends React.Component {
@@ -25,32 +25,41 @@ class StockExchange extends React.Component {
   }
 
   changeStock(e){
-    let b = this.state.stockList.filter(i => i[0] == e.target.value);
+  	let value = e.target.textContent.split(' ')[0];
+    let b = this.state.stockList.filter(i => i[0] == value);
 
     if(!b.length){
       return;
     }
 
     this.setState({
-      stock: e.target.value,
+      stock: value,
       companyName: b[0][1]
     });    
-
   }
 
   render(){
     return (<div>
 	        <FetchStockData type={this.state.type} stock={this.state.stock} companyName={this.state.companyName} />
 
-          <b>Select Chart Type  </b>
-          <select name="type" onChange={e => this.changeType(e)}>
-            <option value="default">Default</option>
-            <option value="line">Line</option>
-            <option value="column">Column</option>
-            <option value="scatter">Scatter</option>
-          </select>
+	        <div className="row">
+	        	<div className="col-md-6">
+	        		<b>Select Chart Type  </b>
+					<select name="type" onChange={e => this.changeType(e)}>
+						<option value="default">Default</option>
+						<option value="line">Line</option>
+						<option value="column">Column</option>
+						<option value="scatter">Scatter</option>
+					</select>
+	        	</div>
 
-          <Dropdown onChange={e => this.changeStock(e)} stockList={this.state.stockList}/>
+	        	<div className="col-md-6">
+	        		<Dropdown onClick={e => this.changeStock(e)} stockList={this.state.stockList}/>
+	        	</div>
+	        </div>
+          
+
+          
 	      </div>);
   }
 }

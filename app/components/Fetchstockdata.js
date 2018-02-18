@@ -24,13 +24,11 @@ class FetchStockData extends React.Component {
       }).then(res => (res.json()))
       .catch(error => console.error('Error:', error))
       .then(response => {
-        // console.log(response["Monthly Adjusted Time Series"]);
           let data = response["Monthly Adjusted Time Series"];
           Object.keys(response["Monthly Adjusted Time Series"]).map(i => array.push([new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. adjusted close'])]));
           this.setState({
             data: array.sort(sortFunction)
           });
-          // console.log(array);
       });
 
       function sortFunction(a, b) {
