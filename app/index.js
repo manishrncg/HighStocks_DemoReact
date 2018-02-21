@@ -14,10 +14,9 @@ class StockExchange extends React.Component {
       stock: 'MSFT',
       companyName: 'Microsoft',
       stockList: StockList
-    }
-
-    this.changeType = this.changeType.bind(this);
+    };
   }
+  
   changeType(e){
     this.setState({
       type: e.target.value || 'default'

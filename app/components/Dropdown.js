@@ -8,7 +8,7 @@ class Dropdown extends React.Component {
 			li: '',
 			liSelected: false,
 			stockList: this.props.stockList
-		}
+		};
 	}
 
 	onClick(){
