@@ -42,7 +42,7 @@ class StockExchange extends React.Component {
 	        <FetchStockData type={this.state.type} stock={this.state.stock} companyName={this.state.companyName} />
 
 	        <div className="row">
-	        	<div className="col-md-6">
+	        	<div className="col-md-6 col-lg-6 col-sm-12 col-xs-12">
 	        		<b>Select Chart Type  </b>
 					<select name="type" onChange={e => this.changeType(e)}>
 						<option value="default">Default</option>
@@ -52,7 +52,7 @@ class StockExchange extends React.Component {
 					</select>
 	        	</div>
 
-	        	<div className="col-md-6">
+	        	<div className="col-md-6 col-lg-6 col-sm-12 col-xs-12">
 	        		<Dropdown onClick={e => this.changeStock(e)} stockList={this.state.stockList}/>
 	        	</div>
 	        </div>
