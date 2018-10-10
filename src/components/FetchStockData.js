@@ -54,7 +54,7 @@ class FetchStockData extends Component {
       .catch(error => console.error('Error:', error))
       .then(response => {
           let data = response["Monthly Adjusted Time Series"];
-          Object.keys(data)
+          data && Object.keys(data)
                     .map(i => array.push(
                       [new Date(i).getTime(), Number(data[i]['1. open']), Number(data[i]['2. high']), Number(data[i]['3. low']), Number(data[i]['4. close']), Number(data[i]['5. adjusted close'])]
                       ));
